@@ -24,6 +24,13 @@
     </script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Flash animation for live price updates */
+        @keyframes flashGreen { 0% { color: #10b981; } 100% { color: white; } }
+        @keyframes flashRed { 0% { color: #ef4444; } 100% { color: white; } }
+        .tick-up { animation: flashGreen 1s ease-out; color: #10b981 !important; }
+        .tick-down { animation: flashRed 1s ease-out; color: #ef4444 !important; }
+    </style>
 </head>
 <body class="bg-darkbg text-gray-100 font-sans antialiased min-h-screen flex flex-col">
 
@@ -31,11 +38,14 @@
     <div class="bg-cardbg border-b border-gray-800 text-xs py-2 px-4 overflow-x-auto whitespace-nowrap shadow-inner sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex items-center justify-between space-x-8">
             <div class="flex items-center space-x-6">
-                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">NIFTY 50 (Lot: 65):</strong> <span id="tickerNifty" class="text-white font-bold">24,385.50</span> <span class="text-emerald-400 font-medium">(Weekly & Monthly Active)</span></span>
-                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">BANK NIFTY (Lot: 30):</strong> <span id="tickerBankNifty" class="text-white font-bold">52,240.25</span> <span class="text-blue-400 font-medium">(Monthly Expiry Only)</span></span>
-                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">INDIA VIX:</strong> <span id="tickerVix" class="text-yellow-400 font-bold">13.45</span></span>
+                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">NIFTY 50 (Lot: 65):</strong> <span id="tickerNifty" class="text-white font-bold transition-colors">24,385.50</span> <span class="text-emerald-400 font-medium">(Weekly & Monthly Active)</span></span>
+                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">BANK NIFTY (Lot: 30):</strong> <span id="tickerBankNifty" class="text-white font-bold transition-colors">52,240.25</span> <span class="text-blue-400 font-medium">(Monthly Expiry Only)</span></span>
+                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">INDIA VIX:</strong> <span id="tickerVix" class="text-yellow-400 font-bold transition-colors">13.45</span></span>
             </div>
-            <div class="text-gray-400 text-[11px]"><i class="fa-solid fa-calendar-days text-emerald-400 mr-1"></i> Date: November 2026 Guidelines</div>
+            <div class="flex items-center space-x-3 text-[11px]">
+                <span id="connectionStatus" class="text-emerald-400"><i class="fa-solid fa-circle fa-fade text-[8px] mr-1"></i> LIVE FEED ACTIVE</span>
+                <div class="text-gray-400 border-l border-gray-700 pl-3"><i class="fa-solid fa-clock text-blue-400 mr-1"></i> <span id="lastUpdated">Updating...</span></div>
+            </div>
         </div>
     </div>
 
@@ -64,12 +74,10 @@
 
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow space-y-8">
-
-        <!-- Welcome Banner -->
         <div class="bg-gradient-to-r from-blue-900/40 via-cardbg to-cardbg border border-blue-800/40 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-white">Active Index Option Signals</h2>
-                <p class="text-gray-400 text-sm mt-1">Nifty 50 (Weekly & Monthly) and Bank Nifty (Monthly Expiry Only) active positions mapped to November 2026 lot structures.</p>
+                <p class="text-gray-400 text-sm mt-1">Nifty 50 (Weekly & Monthly) and Bank Nifty (Monthly Expiry Only) active positions.</p>
             </div>
             <div class="flex items-center space-x-3">
                 <label class="text-sm font-medium text-gray-300">Filter Expiry:</label>
@@ -85,72 +93,39 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="signalsGrid">
             <!-- Populated dynamically via JS -->
         </div>
-
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-cardbg border-t border-gray-800 mt-12 py-6 text-center text-xs text-gray-400">
-        <p>&copy; 2026 Naruka Wealth. Private Signal Terminal for Rahul Naruka.</p>
-        <p class="mt-1">Compliant with November 2026 NSE Index Lot Sizes (Nifty: 65, BankNifty: 30) & Expiry Rules.</p>
-    </footer>
 
     <!-- Application Script -->
     <script>
-        // Live Signals Data aligned with Nov 2026 Expiry Rules (BankNifty Weekly removed)
-        const liveSignals = [
+        // 1. Core State Array (Now mutable for live updates)
+        let liveSignals = [
             { 
-                ticker: "NIFTY", 
-                name: "Nifty 50 Index", 
-                expiryType: "Weekly Expiry", 
-                expiryDate: "2026-11-05", 
-                strategy: "Option Credit Spread (Bull Put)", 
-                action: "SELL 24200 PE / BUY 24000 PE (Lot: 65)", 
-                entryDate: "2026-11-02", 
-                spot: "24,385.50", 
-                capitalRequired: "₹27,950", 
-                maxProfit: "₹2,925", 
-                maxRisk: "₹10,075", 
-                runningPnl: "+₹1,495", 
-                pnlClass: "text-emerald-400", 
-                iv: "13.8% (Cheap)", 
-                prob: "87.2%" 
+                id: "sig_nifty_weekly",
+                ticker: "NIFTY", name: "Nifty 50 Index", expiryType: "Weekly Expiry", expiryDate: "2026-11-05", 
+                strategy: "Option Credit Spread (Bull Put)", action: "SELL 24200 PE / BUY 24000 PE (Lot: 65)", 
+                entryDate: "2026-11-02", spot: 24385.50, capitalRequired: "₹27,950", 
+                maxProfit: "₹2,925", maxRisk: "₹10,075", runningPnl: 1495, 
+                iv: "13.8% (Cheap)", prob: "87.2%" 
             },
             { 
-                ticker: "NIFTY", 
-                name: "Nifty 50 Index", 
-                expiryType: "Monthly Expiry", 
-                expiryDate: "2026-11-26", 
-                strategy: "Option Credit Spread (Bull Put)", 
-                action: "SELL 24000 PE / BUY 23800 PE (Lot: 65)", 
-                entryDate: "2026-10-28", 
-                spot: "24,385.50", 
-                capitalRequired: "₹27,950", 
-                maxProfit: "₹7,800", 
-                maxRisk: "₹5,200", 
-                runningPnl: "+₹3,705", 
-                pnlClass: "text-emerald-400", 
-                iv: "13.8% (Cheap)", 
-                prob: "85.2%" 
+                id: "sig_nifty_monthly",
+                ticker: "NIFTY", name: "Nifty 50 Index", expiryType: "Monthly Expiry", expiryDate: "2026-11-26", 
+                strategy: "Option Credit Spread (Bull Put)", action: "SELL 24000 PE / BUY 23800 PE (Lot: 65)", 
+                entryDate: "2026-10-28", spot: 24385.50, capitalRequired: "₹27,950", 
+                maxProfit: "₹7,800", maxRisk: "₹5,200", runningPnl: 3705, 
+                iv: "13.8% (Cheap)", prob: "85.2%" 
             },
             { 
-                ticker: "BANKNIFTY", 
-                name: "Bank Nifty Index", 
-                expiryType: "Monthly Expiry", 
-                expiryDate: "2026-11-26", 
-                strategy: "Naked Put Selling", 
-                action: "SELL 51000 PE (Lot: 30) [Monthly Only]", 
-                entryDate: "2026-10-29", 
-                spot: "52,240.25", 
-                capitalRequired: "₹52,000", 
-                maxProfit: "₹10,650", 
-                maxRisk: "₹76,925", 
-                runningPnl: "+₹5,340", 
-                pnlClass: "text-emerald-400", 
-                iv: "16.9% (Elevated)", 
-                prob: "82.5%" 
+                id: "sig_banknifty_monthly",
+                ticker: "BANKNIFTY", name: "Bank Nifty Index", expiryType: "Monthly Expiry", expiryDate: "2026-11-26", 
+                strategy: "Naked Put Selling", action: "SELL 51000 PE (Lot: 30) [Monthly Only]", 
+                entryDate: "2026-10-29", spot: 52240.25, capitalRequired: "₹52,000", 
+                maxProfit: "₹10,650", maxRisk: "₹76,925", runningPnl: 5340, 
+                iv: "16.9% (Elevated)", prob: "82.5%" 
             }
         ];
 
+        // 2. DOM Rendering Engine
         function renderSignals(filter = "ALL") {
             const grid = document.getElementById('signalsGrid');
             grid.innerHTML = "";
@@ -158,13 +133,16 @@
             
             filtered.forEach(s => {
                 const expiryBadgeColor = s.expiryType === 'Weekly Expiry' ? 'bg-purple-950 text-purple-300 border-purple-800/50' : 'bg-blue-950 text-blue-300 border-blue-800/50';
+                const pnlClass = s.runningPnl >= 0 ? "text-emerald-400" : "text-danger";
+                const pnlPrefix = s.runningPnl >= 0 ? "+" : "";
+
                 grid.innerHTML += `
-                    <div class="bg-cardbg rounded-2xl p-6 border border-gray-800 shadow-xl flex flex-col justify-between space-y-4">
+                    <div id="card_${s.id}" class="bg-cardbg rounded-2xl p-6 border border-gray-800 shadow-xl flex flex-col justify-between space-y-4 transition-all duration-300">
                         <div>
                             <div class="flex justify-between items-start mb-2">
                                 <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-900/60 text-blue-300 border border-blue-700/50">${s.ticker}</span>
                                 <div class="flex items-center space-x-1.5">
-                                    <span class="text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50"><i class="fa-solid fa-chart-pie mr-1"></i>${s.prob} Win Prob</span>
+                                    <span class="text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50"><i class="fa-solid fa-chart-pie mr-1"></i>${s.prob} Win</span>
                                     <span class="px-2 py-0.5 rounded text-[10px] font-semibold border ${expiryBadgeColor}">${s.expiryType}</span>
                                 </div>
                             </div>
@@ -174,26 +152,138 @@
                         <div class="bg-darkbg p-3 rounded-xl border border-gray-800 space-y-1.5 text-xs">
                             <div class="flex justify-between"><span class="text-gray-400">Action:</span> <span class="font-bold text-white">${s.action}</span></div>
                             <div class="flex justify-between"><span class="text-gray-400">Entry & Expiry:</span> <span class="text-yellow-400 font-medium">${s.entryDate} &rarr; ${s.expiryDate}</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Spot Price:</span> <span class="text-gray-200 font-bold">₹${s.spot}</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Capital Required:</span> <span class="text-cyan-400 font-bold">${s.capitalRequired}</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Max Profit / Risk:</span> <span class="text-emerald-400 font-semibold">${s.maxProfit}</span> / <span class="text-danger font-semibold">${s.maxRisk}</span></div>
-                            <div class="flex justify-between border-t border-gray-800 pt-1.5"><span class="text-gray-300 font-medium">Running P&L:</span> <span class="font-bold text-sm ${s.pnlClass}">${s.runningPnl}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Spot Price:</span> <span id="spot_${s.id}" class="text-gray-200 font-bold">₹${s.spot.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
+                            <div class="flex justify-between border-t border-gray-800 pt-1.5">
+                                <span class="text-gray-300 font-medium">Live P&L:</span> 
+                                <span id="pnl_${s.id}" class="font-bold text-sm ${pnlClass}">${pnlPrefix}₹${s.runningPnl.toLocaleString('en-IN')}</span>
+                            </div>
                         </div>
-                        <button onclick="alert('Signal executed for ${s.ticker} (${s.strategy})!')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl transition shadow">
-                            Execute Strategy Order
-                        </button>
                     </div>
                 `;
             });
         }
 
         function filterSignals() {
-            const val = document.getElementById('signalFilter').value;
-            renderSignals(val);
+            renderSignals(document.getElementById('signalFilter').value);
+        }
+
+        // 3. UI Update Helpers
+        function updateDOMElement(elementId, newValue, isCurrency = false, isTicker = false) {
+            const el = document.getElementById(elementId);
+            if(!el) return;
+            
+            const oldText = el.innerText.replace(/[^0-9.-]+/g,"");
+            const oldValue = parseFloat(oldText);
+            
+            let formattedValue = isCurrency ? 
+                (newValue >= 0 ? "+" : "") + "₹" + Math.abs(newValue).toLocaleString('en-IN', {minimumFractionDigits: isTicker?2:0}) :
+                newValue.toLocaleString('en-IN', {minimumFractionDigits: 2});
+
+            el.innerText = formattedValue;
+
+            // Apply flash animation based on tick direction
+            if (newValue > oldValue) {
+                el.classList.remove('tick-down');
+                el.classList.add('tick-up');
+            } else if (newValue < oldValue) {
+                el.classList.remove('tick-up');
+                el.classList.add('tick-down');
+            }
+            
+            setTimeout(() => {
+                el.classList.remove('tick-up', 'tick-down');
+                if(!isTicker && elementId.startsWith("pnl_")) {
+                    el.className = `font-bold text-sm ${newValue >= 0 ? 'text-emerald-400' : 'text-danger'}`;
+                }
+            }, 1000);
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('lastUpdated').innerText = now.toLocaleTimeString();
+        }
+
+        // 4. Real Data Feed Integration
+        async function fetchLiveMarketData() {
+            try {
+                // Replace with your actual NSE Invest or Broker API endpoint
+                const API_URL = 'https://api.nseinvest.com/v1/market/status'; 
+                
+                const response = await fetch(API_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        // Add your specific API Keys/Tokens here
+                        'Authorization': 'Bearer YOUR_API_TOKEN_HERE' 
+                    }
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const data = await response.json();
+
+                // 1. Map API payload to your variables (Adjust these keys based on your API's JSON response)
+                const currentNifty = data.indices.find(i => i.symbol === 'NIFTY 50').lastPrice;
+                const currentBNifty = data.indices.find(i => i.symbol === 'NIFTY BANK').lastPrice;
+                const currentVix = data.indices.find(i => i.symbol === 'INDIA VIX').lastPrice;
+
+                // 2. Update Tickers in the Header
+                updateDOMElement('tickerNifty', currentNifty, false, true);
+                updateDOMElement('tickerBankNifty', currentBNifty, false, true);
+                updateDOMElement('tickerVix', currentVix, false, true);
+
+                // 3. Update P&L for Active Signals based on the real spot price
+                liveSignals.forEach(signal => {
+                    let priceDiff = 0;
+                    
+                    if (signal.ticker === 'NIFTY') {
+                        priceDiff = currentNifty - signal.spot;
+                        signal.spot = currentNifty;
+                    } else if (signal.ticker === 'BANKNIFTY') {
+                        priceDiff = currentBNifty - signal.spot;
+                        signal.spot = currentBNifty;
+                    }
+                    
+                    // Basic simulated P&L change based on spot movement (Replace with your actual Greeks/Options pricing logic)
+                    // If Nifty goes up, bull put spread gains (up to max profit).
+                    const deltaImpact = priceDiff * (signal.ticker === 'NIFTY' ? 65 : 30) * 0.3; // Rough 0.3 Delta assumption
+                    signal.runningPnl += deltaImpact; 
+                    
+                    // Cap P&L between max risk and max profit limits
+                    const maxProf = parseFloat(signal.maxProfit.replace(/[^0-9.-]+/g,""));
+                    const maxRisk = -parseFloat(signal.maxRisk.replace(/[^0-9.-]+/g,""));
+                    if (signal.runningPnl > maxProf) signal.runningPnl = maxProf;
+                    if (signal.runningPnl < maxRisk) signal.runningPnl = maxRisk;
+
+                    // Update DOM Cards
+                    updateDOMElement(`spot_${signal.id}`, signal.spot, true, true);
+                    updateDOMElement(`pnl_${signal.id}`, signal.runningPnl, true, false);
+                });
+
+                updateTimestamp();
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-circle fa-fade text-[8px] mr-1"></i> LIVE FEED ACTIVE`;
+                document.getElementById('connectionStatus').className = "text-emerald-400";
+
+            } catch (error) {
+                console.error("Error fetching live data:", error);
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> FEED DISCONNECTED`;
+                document.getElementById('connectionStatus').className = "text-danger";
+            }
+        }
+
+        function startLiveFeed() {
+            // Fetch immediately on load
+            fetchLiveMarketData();
+            
+            // Poll the API every 3 seconds (3000ms)
+            // Note: Ensure your API rate limits allow 3-second polling, otherwise increase to 10000ms (10 seconds)
+            setInterval(fetchLiveMarketData, 3000); 
         }
 
         window.onload = function() {
             renderSignals();
+            updateTimestamp();
+            startLiveFeed();
         };
     </script>
 </body>
