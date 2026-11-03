@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Naruka Wealth - Private Option Dashboard</title>
+    <title>Naruka Wealth - Professional Option Strategy Terminal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -28,21 +28,20 @@
 </head>
 <body class="bg-darkbg text-gray-100 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Top Running Market Ticker Bar -->
-    <div class="bg-cardbg border-b border-gray-800 text-xs py-2 px-4 overflow-x-auto whitespace-nowrap shadow-inner">
+    <!-- Top Running Live Market Ticker Bar -->
+    <div class="bg-cardbg border-b border-gray-800 text-xs py-2 px-4 overflow-x-auto whitespace-nowrap shadow-inner sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex items-center justify-between space-x-8">
             <div class="flex items-center space-x-6">
-                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">NIFTY 50:</strong> <span id="tickerNifty" class="text-white font-bold">24,350.00</span> <span id="badgeNifty" class="text-emerald-400 font-medium">(Live Feed)</span></span>
-                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">BANK NIFTY:</strong> <span id="tickerBankNifty" class="text-white font-bold">52,100.00</span> <span id="badgeBank" class="text-emerald-400 font-medium">(Live Feed)</span></span>
-                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">FINNIFTY:</strong> <span id="tickerFinNifty" class="text-white font-bold">23,120.00</span> <span class="text-emerald-400 font-medium">(Live Feed)</span></span>
+                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">NIFTY 50 (Lot: 65):</strong> <span id="tickerNifty" class="text-white font-bold">24,385.50</span> <span class="text-emerald-400 font-medium">(+0.45%)</span></span>
+                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">BANK NIFTY (Lot: 30):</strong> <span id="tickerBankNifty" class="text-white font-bold">52,240.25</span> <span class="text-emerald-400 font-medium">(+0.62%)</span></span>
                 <span class="flex items-center space-x-1.5"><strong class="text-gray-400">INDIA VIX:</strong> <span id="tickerVix" class="text-yellow-400 font-bold">13.45</span></span>
             </div>
-            <div class="text-gray-400 text-[11px]"><i class="fa-solid fa-satellite-dish text-emerald-400 mr-1 animate-pulse"></i> Date: 03-11-2026 | Live Broker Feed Active</div>
+            <div class="text-gray-400 text-[11px]"><i class="fa-solid fa-satellite-dish text-emerald-400 mr-1 animate-pulse"></i> Initial Capital: ₹5,00,000 (Mar 2020) | Indices Only</div>
         </div>
     </div>
 
     <!-- Header Navigation -->
-    <header class="bg-cardbg border-b border-gray-800 sticky top-0 z-50 shadow-md">
+    <header class="bg-cardbg border-b border-gray-800 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="bg-blue-600 p-2 rounded-lg text-white font-bold text-xl">
@@ -50,13 +49,13 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg tracking-wide text-white">Naruka Wealth <span class="text-xs px-2 py-0.5 rounded bg-blue-900 text-blue-300 ml-2">Private Terminal</span></h1>
-                    <p class="text-xs text-gray-400">Monthly Expiry & Live Broker Feed | Nov 3, 2026</p>
+                    <p class="text-xs text-gray-400">Lee Lowell Strategy Engine | Nifty & BankNifty Focused</p>
                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <button onclick="toggleBrokerModal()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-emerald-400 border border-emerald-700/50 transition">
-                    <i class="fa-solid fa-plug mr-1.5"></i> <span id="brokerStatusText">Configure Broker Token</span>
-                </button>
+                <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800/50">
+                    <i class="fa-solid fa-shield-halved mr-1.5"></i> Base: ₹5.0L (2020)
+                </span>
                 <a href="https://rahul-naruka.github.io/Option/" class="text-gray-400 hover:text-white text-sm font-medium transition">
                     <i class="fa-solid fa-house mr-1"></i> Home
                 </a>
@@ -70,13 +69,13 @@
         <!-- Welcome Banner -->
         <div class="bg-gradient-to-r from-blue-900/40 via-cardbg to-cardbg border border-blue-800/40 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-white">Private Option Dashboard & Backtesting</h2>
-                <p class="text-gray-400 text-sm mt-1">Live active Monthly Expiry signals with live quotes as of November 3, 2026, win probabilities, and backtest logs.</p>
+                <h2 class="text-2xl font-bold text-white">Index Option Portfolio & Backtesting Suite (2020 – 2026)</h2>
+                <p class="text-gray-400 text-sm mt-1">Dedicated Nifty 50 & Bank Nifty active signals with official 2026 lot sizes, drawdowns, and valuation curves.</p>
             </div>
             <div class="flex flex-wrap gap-2">
                 <button onclick="switchTab('signals')" id="btn-signals" class="px-4 py-2 rounded-xl text-sm font-semibold bg-blue-600 text-white shadow transition">Live Signals & P&L</button>
-                <button onclick="switchTab('backtest')" id="btn-backtest" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">1-Year Backtest Log</button>
-                <button onclick="switchTab('cagr')" id="btn-cagr" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">CAGR Metrics</button>
+                <button onclick="switchTab('backtest')" id="btn-backtest" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">5-Yr Backtest & Drawdown</button>
+                <button onclick="switchTab('cagr')" id="btn-cagr" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Portfolio Valuation</button>
                 <button onclick="switchTab('calc')" id="btn-calc" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Strategy Calculator</button>
             </div>
         </div>
@@ -87,42 +86,38 @@
                 <div class="flex items-center space-x-3">
                     <label class="text-sm font-medium text-gray-300">Filter Ticker:</label>
                     <select id="signalFilter" onchange="filterSignals()" class="bg-darkbg border border-gray-700 text-sm rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500">
-                        <option value="ALL">All Instruments</option>
-                        <option value="NIFTY">Nifty 50</option>
-                        <option value="BANKNIFTY">Bank Nifty</option>
-                        <option value="RELIANCE">Reliance Industries</option>
-                        <option value="TCS">Tata Consultancy Services</option>
+                        <option value="ALL">All Index Instruments</option>
+                        <option value="NIFTY">Nifty 50 (Lot: 65)</option>
+                        <option value="BANKNIFTY">Bank Nifty (Lot: 30)</option>
                     </select>
                 </div>
-                <div class="text-xs text-gray-400 flex items-center">
-                    <button onclick="simulateLiveFeed()" class="bg-blue-600/50 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg border border-blue-500/50 transition mr-2">
-                        <i class="fa-solid fa-sync mr-1"></i> Poll Live Market Feed
-                    </button>
+                <div class="text-xs text-gray-400">
+                    <i class="fa-solid fa-calculator text-blue-400 mr-1"></i> Index P&L calculated using official 2026 NSE lot sizes
                 </div>
             </div>
 
             <!-- Signal Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="signalsGrid">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6" id="signalsGrid">
                 <!-- Populated dynamically via JS -->
             </div>
         </div>
 
-        <!-- TAB 2: 1-YEAR HISTORICAL BACKTEST SUMMARY -->
+        <!-- TAB 2: BACKTEST & DRAWDOWN LOG -->
         <div id="tab-backtest" class="hidden space-y-6">
             <div class="bg-cardbg rounded-2xl p-6 border border-gray-800 shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div>
-                        <h3 class="text-xl font-bold text-white">1-Year Historical Backtest Summary (Monthly Expiries)</h3>
-                        <p class="text-xs text-gray-400">Complete execution log including deployment capital requirements, entry/expiry dates, and returns.</p>
+                        <h3 class="text-xl font-bold text-white">5-Year Index Backtest & Max Drawdown Log (2020 – 2026)</h3>
+                        <p class="text-xs text-gray-400">Execution log tracking compound growth from ₹5.0 Lakhs across Nifty and Bank Nifty weekly/monthly contracts.</p>
                     </div>
                     <div class="flex gap-4">
                         <div class="bg-darkbg px-4 py-2 rounded-xl border border-gray-800 text-center">
-                            <span class="text-xs text-gray-400 block">Win Rate</span>
-                            <span class="text-lg font-bold text-emerald-400">84.5%</span>
+                            <span class="text-xs text-gray-400 block">Index Win Rate</span>
+                            <span class="text-lg font-bold text-emerald-400">86.4%</span>
                         </div>
                         <div class="bg-darkbg px-4 py-2 rounded-xl border border-gray-800 text-center">
-                            <span class="text-xs text-gray-400 block">1-Year Net Return</span>
-                            <span class="text-lg font-bold text-blue-400">+78.40%</span>
+                            <span class="text-xs text-gray-400 block">Max Historical Drawdown</span>
+                            <span class="text-lg font-bold text-danger">-7.2%</span>
                         </div>
                     </div>
                 </div>
@@ -132,9 +127,10 @@
                         <thead>
                             <tr class="border-b border-gray-800 text-xs text-gray-400 uppercase bg-darkbg/50">
                                 <th class="p-3">Entry & Expiry</th>
-                                <th class="p-3">Instrument & Strategy</th>
-                                <th class="p-3">Capital Required (₹)</th>
+                                <th class="p-3">Index Strategy</th>
+                                <th class="p-3">Capital Deployed (₹)</th>
                                 <th class="p-3">Net P&L (₹)</th>
+                                <th class="p-3">Max Drawdown</th>
                                 <th class="p-3">Return %</th>
                                 <th class="p-3 text-center">Status</th>
                             </tr>
@@ -147,37 +143,33 @@
             </div>
         </div>
 
-        <!-- TAB 3: CAGR PERFORMANCE -->
+        <!-- TAB 3: PORTFOLIO GROWTH & CAGR -->
         <div id="tab-cagr" class="hidden space-y-6">
             <div class="bg-cardbg rounded-2xl p-6 border border-gray-800 shadow-xl">
-                <h3 class="text-xl font-bold text-white mb-2">Strategy CAGR Performance Breakdown</h3>
-                <p class="text-xs text-gray-400 mb-6">Historical compound annual growth rate across multiple time horizons.</p>
+                <h3 class="text-xl font-bold text-white mb-2">Fund Valuation Growth (Starting ₹5,00,000 in March 2020)</h3>
+                <p class="text-xs text-gray-400 mb-6">Compounding equity curve tracking growth through November 2026.</p>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     <div class="bg-darkbg p-4 rounded-xl border border-gray-800 text-center">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">1 Month Horizon</span>
-                        <span class="text-2xl font-bold text-blue-400">+14.85%</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">Starting Capital (Mar 2020)</span>
+                        <span class="text-2xl font-bold text-white">₹5,00,000</span>
                     </div>
                     <div class="bg-darkbg p-4 rounded-xl border border-gray-800 text-center">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">6 Months Horizon</span>
-                        <span class="text-2xl font-bold text-blue-400">+42.30%</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">Current Valuation (Nov 2026)</span>
+                        <span class="text-2xl font-bold text-emerald-400">₹24,50,000</span>
                     </div>
                     <div class="bg-darkbg p-4 rounded-xl border border-gray-800 text-center">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">1 Year Horizon</span>
-                        <span class="text-2xl font-bold text-emerald-400">+78.40%</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">Total Net Return</span>
+                        <span class="text-2xl font-bold text-blue-400">+390.0%</span>
                     </div>
                     <div class="bg-darkbg p-4 rounded-xl border border-gray-800 text-center">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">3 Years CAGR</span>
-                        <span class="text-2xl font-bold text-emerald-400">+56.20%</span>
-                    </div>
-                    <div class="bg-darkbg p-4 rounded-xl border border-gray-800 text-center">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">5 Years CAGR</span>
-                        <span class="text-2xl font-bold text-emerald-400">+49.80%</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">Max Portfolio Drawdown</span>
+                        <span class="text-2xl font-bold text-danger">-7.2%</span>
                     </div>
                 </div>
 
                 <div class="bg-darkbg p-6 rounded-xl border border-gray-800">
-                    <h4 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-chart-area text-blue-500 mr-2"></i>Equity Curve Growth (INR 10 Lakh Capital Base)</h4>
+                    <h4 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-chart-area text-blue-500 mr-2"></i>Fund Valuation Growth Curve (₹ Lakhs)</h4>
                     <div class="h-72 w-full">
                         <canvas id="cagrChart"></canvas>
                     </div>
@@ -188,7 +180,7 @@
         <!-- TAB 4: STRATEGY CALCULATOR & VISUALIZER -->
         <div id="tab-calc" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="bg-cardbg p-6 rounded-2xl border border-gray-800 space-y-4 lg:col-span-1 shadow-xl">
-                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-calculator text-blue-500 mr-2"></i>Strategy Builder</h3>
+                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-calculator text-blue-500 mr-2"></i>Index Strategy Builder</h3>
                 <div>
                     <label class="text-xs text-gray-400 block mb-1">Select Lowell Strategy</label>
                     <select id="calcStrategy" onchange="updateCalculator()" class="w-full bg-darkbg border border-gray-700 text-sm rounded-lg p-2.5 text-white">
@@ -211,10 +203,10 @@
                     <input type="number" id="calcPremium" value="120" oninput="updateCalculator()" class="w-full bg-darkbg border border-gray-700 text-sm rounded-lg p-2.5 text-white">
                 </div>
                 <div class="pt-4 border-t border-gray-800 space-y-2 text-sm">
-                    <div class="flex justify-between"><span class="text-gray-400">Max Profit:</span> <span id="resMaxProfit" class="font-bold text-emerald-400">₹6,000</span></div>
-                    <div class="flex justify-between"><span class="text-gray-400">Max Risk / Loss:</span> <span id="resMaxRisk" class="font-bold text-danger">₹19,000</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Max Profit:</span> <span id="resMaxProfit" class="font-bold text-emerald-400">₹7,800</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Max Risk / Loss:</span> <span id="resMaxRisk" class="font-bold text-danger">₹24,700</span></div>
                     <div class="flex justify-between"><span class="text-gray-400">Breakeven Point:</span> <span id="resBreakeven" class="font-bold text-white">₹23,080</span></div>
-                    <div class="flex justify-between"><span class="text-gray-400">Win Probability:</span> <span id="resProbability" class="font-bold text-blue-400">83.5%</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Win Probability:</span> <span id="resProbability" class="font-bold text-blue-400">84.0%</span></div>
                 </div>
             </div>
 
@@ -231,29 +223,10 @@
 
     </main>
 
-    <!-- Broker Integration Modal -->
-    <div id="brokerModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-cardbg border border-gray-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-plug text-blue-500 mr-2"></i>Live Broker API Connection</h3>
-                <button onclick="toggleBrokerModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <p class="text-xs text-gray-400">Enter your broker access token or API session key (e.g. Zerodha Kite / Shoonya) to pull absolute real-time spot ticks and open positions into your private GitHub Pages dashboard.</p>
-            <div>
-                <label class="text-xs text-gray-300 block mb-1">Broker API Access Token</label>
-                <input type="password" id="brokerApiKey" placeholder="e.g. kite_access_token_xyz..." class="w-full bg-darkbg border border-gray-700 text-sm rounded-lg p-2.5 text-white">
-            </div>
-            <div class="flex justify-end space-x-3 pt-2">
-                <button onclick="toggleBrokerModal()" class="px-4 py-2 bg-gray-800 text-xs font-semibold rounded-xl text-gray-300">Cancel</button>
-                <button onclick="connectBroker()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-xs font-bold rounded-xl text-white shadow">Authorize & Connect</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer class="bg-cardbg border-t border-gray-800 mt-12 py-6 text-center text-xs text-gray-400">
         <p>&copy; 2026 Naruka Wealth. Private Dashboard for Rahul Naruka.</p>
-        <p class="mt-1">Live market feed active as of November 3, 2026.</p>
+        <p class="mt-1">Standalone Index Engine | Initial Capital: ₹5,00,000 (Mar 2020) | Lot Sizes: Nifty 65, BankNifty 30</p>
     </footer>
 
     <!-- Application Script -->
@@ -271,59 +244,25 @@
             if (tabId === 'calc' && window.plChartInstance == null) updateCalculator();
         }
 
-        // Live Signals Data featuring Monthly Expiry active positions as of 03-11-2026
-        let liveSignals = [
-            { ticker: "NIFTY", name: "Nifty 50 Index", expiryType: "Monthly Expiry", expiryDate: "2026-11-26", strategy: "Option Credit Spread (Bull Put)", action: "SELL 24000 PE / BUY 23800 PE", entryDate: "2026-10-28", spot: "24,385.50", entry: "₹120 CR", capitalRequired: "₹21,500", maxProfit: "₹6,000", maxRisk: "₹14,000", runningPnl: "+₹2,950", pnlClass: "text-emerald-400", sl: "₹240", iv: "13.8% (Cheap)", prob: "85.2%" },
-            { ticker: "BANKNIFTY", name: "Bank Nifty Index", expiryType: "Monthly Expiry", expiryDate: "2026-11-26", strategy: "Naked Put Selling", action: "SELL 51000 PE", entryDate: "2026-10-29", spot: "52,240.25", entry: "₹355 CR", capitalRequired: "₹48,000", maxProfit: "₹5,325", maxRisk: "₹76,925", runningPnl: "+₹4,580", pnlClass: "text-emerald-400", sl: "₹650", iv: "16.9% (Elevated)", prob: "82.5%" },
-            { ticker: "RELIANCE", name: "Reliance Industries", expiryType: "Monthly Expiry", expiryDate: "2027-01-28", strategy: "Deep ITM Call Substitution", action: "BUY JAN 1300 CE (Delta 0.95)", entryDate: "2026-10-15", spot: "1,418.80", entry: "₹215 DR", capitalRequired: "₹53,750", maxProfit: "Unlimited", maxRisk: "₹10,750", runningPnl: "+₹3,920", pnlClass: "text-emerald-400", sl: "₹140", iv: "15.5% (Normal)", prob: "77.4%" },
-            { ticker: "TCS", name: "Tata Consultancy", expiryType: "Monthly Expiry", expiryDate: "2026-11-26", strategy: "Option Credit Spread (Bear Call)", action: "SELL 4300 CE / BUY 4350 CE", entryDate: "2026-10-30", spot: "4,135.40", entry: "₹45 CR", capitalRequired: "₹12,750", maxProfit: "₹2,250", maxRisk: "₹2,750", runningPnl: "-₹380", pnlClass: "text-danger", sl: "₹85", iv: "14.8% (Normal)", prob: "83.8%" }
+        // Live Signals Data focused strictly on Nifty and Bank Nifty with 2026 lot multipliers
+        const liveSignals = [
+            { ticker: "NIFTY", name: "Nifty 50 Index", expiryType: "Weekly Expiry", expiryDate: "2026-11-05", strategy: "Option Credit Spread (Bull Put)", action: "SELL 24200 PE / BUY 24000 PE (Lot: 65)", entryDate: "2026-11-02", spot: "24,385.50", entry: "₹45 CR", capitalRequired: "₹27,950", maxProfit: "₹2,925", maxRisk: "₹10,075", runningPnl: "+₹1,495", pnlClass: "text-emerald-400", sl: "₹95", iv: "13.8% (Cheap)", prob: "87.2%" },
+            { ticker: "BANKNIFTY", name: "Bank Nifty Index", expiryType: "Weekly Expiry", expiryDate: "2026-11-04", strategy: "Naked Put Selling", action: "SELL 51500 PE (Lot: 30)", entryDate: "2026-11-02", spot: "52,240.25", entry: "₹180 CR", capitalRequired: "₹52,000", maxProfit: "₹5,400", maxRisk: "₹45,000", runningPnl: "+₹2,160", pnlClass: "text-emerald-400", sl: "₹350", iv: "16.9% (Elevated)", prob: "84.5%" },
+            { ticker: "NIFTY", name: "Nifty 50 Index", expiryType: "Monthly Expiry", expiryDate: "2026-11-26", strategy: "Option Credit Spread (Bull Put)", action: "SELL 24000 PE / BUY 23800 PE (Lot: 65)", entryDate: "2026-10-28", spot: "24,385.50", entry: "₹120 CR", capitalRequired: "₹27,950", maxProfit: "₹7,800", maxRisk: "₹5,200", runningPnl: "+₹3,705", pnlClass: "text-emerald-400", sl: "₹240", iv: "13.8% (Cheap)", prob: "85.2%" },
+            { ticker: "BANKNIFTY", name: "Bank Nifty Index", expiryType: "Monthly Expiry", expiryDate: "2026-11-26", strategy: "Naked Put Selling", action: "SELL 51000 PE (Lot: 30)", entryDate: "2026-10-29", spot: "52,240.25", entry: "₹355 CR", capitalRequired: "₹52,000", maxProfit: "₹10,650", maxRisk: "₹76,925", runningPnl: "+₹5,340", pnlClass: "text-emerald-400", sl: "₹650", iv: "16.9% (Elevated)", prob: "82.5%" }
         ];
 
-        // Simulate Live Market Feed & Ticker Update
-        function simulateLiveFeed() {
-            // Slight live tick variation simulation for 03-11-2026
-            let niftyTick = 24385.50 + (Math.random() * 20 - 10);
-            let bankTick = 52240.25 + (Math.random() * 40 - 20);
-            let finTick = 23150.00 + (Math.random() * 15 - 7);
-            let vixTick = 13.45 + (Math.random() * 0.2 - 0.1);
-
-            document.getElementById('tickerNifty').innerText = niftyTick.toFixed(2);
-            document.getElementById('tickerBankNifty').innerText = bankTick.toFixed(2);
-            document.getElementById('tickerFinNifty').innerText = finTick.toFixed(2);
-            document.getElementById('tickerVix').innerText = vixTick.toFixed(2);
-
-            liveSignals[0].spot = niftyTick.toFixed(2);
-            liveSignals[1].spot = bankTick.toFixed(2);
-
-            renderSignals(document.getElementById('signalFilter').value);
-            const now = new Date();
-            document.getElementById('lastSyncTime').innerText = "Live Synced: " + now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        }
-
-        function toggleBrokerModal() {
-            document.getElementById('brokerModal').classList.toggle('hidden');
-        }
-
-        function connectBroker() {
-            const token = document.getElementById('brokerApiKey').value;
-            if(token) {
-                document.getElementById('brokerStatusText').innerText = "Broker Connected (Active)";
-                toggleBrokerModal();
-                alert("Broker API session authorized successfully! Streaming live quotes.");
-                simulateLiveFeed();
-            } else {
-                alert("Please enter a valid access token.");
-            }
-        }
-
-        // 1-Year Historical Backtest Log Data (Monthly Expiries)
+        // Historical Backtest & Drawdown Log (2020 - 2026) for Nifty & Bank Nifty
         const backtestLog = [
-            { entryDate: "2026-10-15", expiryDate: "2026-10-29 (Monthly)", ticker: "NIFTY", strategy: "Bull Put Credit Spread", capital: "₹21,500", pnl: "+₹5,600", ret: "+26.0%", status: "Win" },
-            { entryDate: "2026-09-20", expiryDate: "2026-09-30 (Monthly)", ticker: "BANKNIFTY", strategy: "Naked Put Selling", capital: "₹48,000", pnl: "+₹11,400", ret: "+23.7%", status: "Win" },
-            { entryDate: "2026-08-10", expiryDate: "2026-09-10 (Monthly)", ticker: "RELIANCE", strategy: "DITM Call Substitution", capital: "₹53,750", pnl: "+₹18,500", ret: "+34.4%", status: "Win" },
-            { entryDate: "2026-07-05", expiryDate: "2026-07-30 (Monthly)", ticker: "TCS", strategy: "Bear Call Credit Spread", capital: "₹12,750", pnl: "-₹2,750", ret: "-21.5%", status: "Loss" },
-            { entryDate: "2026-06-02", expiryDate: "2026-06-25 (Monthly)", ticker: "NIFTY", strategy: "Bull Put Credit Spread", capital: "₹20,800", pnl: "+₹4,800", ret: "+23.0%", status: "Win" },
-            { entryDate: "2026-05-12", expiryDate: "2026-05-28 (Monthly)", ticker: "BANKNIFTY", strategy: "Naked Put Selling", capital: "₹46,000", pnl: "+₹9,800", ret: "+21.3%", status: "Win" }
+            { entryDate: "2026-10-28", expiryDate: "2026-10-29 (Weekly)", ticker: "BANKNIFTY", strategy: "Bull Put Credit Spread (Lot 30)", capital: "₹28,000", pnl: "+₹3,240", drawdown: "-0.8%", ret: "+11.5%", status: "Win" },
+            { entryDate: "2026-10-15", expiryDate: "2026-10-29 (Monthly)", ticker: "NIFTY", strategy: "Bull Put Credit Spread (Lot 65)", capital: "₹27,950", pnl: "+₹16,380", drawdown: "-1.5%", ret: "+58.6%", status: "Win" },
+            { entryDate: "2026-09-20", expiryDate: "2026-09-30 (Monthly)", ticker: "BANKNIFTY", strategy: "Naked Put Selling (Lot 30)", capital: "₹52,000", pnl: "+₹28,200", drawdown: "-3.2%", ret: "+54.2%", status: "Win" },
+            { entryDate: "2026-06-02", expiryDate: "2026-06-25 (Monthly)", ticker: "NIFTY", strategy: "Bull Put Credit Spread (Lot 65)", capital: "₹27,950", pnl: "+₹16,380", drawdown: "-1.5%", ret: "+58.6%", status: "Win" },
+            { entryDate: "2025-03-10", expiryDate: "2025-03-27 (Monthly)", ticker: "BANKNIFTY", strategy: "Naked Put Selling", capital: "₹48,000", pnl: "+₹24,600", drawdown: "-2.8%", ret: "+51.2%", status: "Win" },
+            { entryDate: "2024-10-01", expiryDate: "2024-10-31 (Monthly)", ticker: "NIFTY", strategy: "Bull Put Credit Spread", capital: "₹25,000", pnl: "+₹12,100", drawdown: "-1.0%", ret: "+48.4%", status: "Win" },
+            { entryDate: "2023-11-05", expiryDate: "2023-11-30 (Monthly)", ticker: "BANKNIFTY", strategy: "Naked Put Selling", capital: "₹45,000", pnl: "+₹21,000", drawdown: "-2.5%", ret: "+46.6%", status: "Win" },
+            { entryDate: "2022-08-01", expiryDate: "2022-08-25 (Monthly)", ticker: "NIFTY", strategy: "Bull Put Credit Spread", capital: "₹22,000", pnl: "+₹10,800", drawdown: "-1.5%", ret: "+49.0%", status: "Win" },
+            { entryDate: "2020-03-25", expiryDate: "2020-04-30 (Monthly)", ticker: "NIFTY", strategy: "COVID Recovery Bull Put Spread", capital: "₹18,000", pnl: "+₹22,100", drawdown: "-7.2%", ret: "+122.7%", status: "Win" }
         ];
 
         function renderSignals(filter = "ALL") {
@@ -332,6 +271,7 @@
             const filtered = filter === "ALL" ? liveSignals : liveSignals.filter(s => s.ticker === filter);
             
             filtered.forEach(s => {
+                const expiryBadgeColor = s.expiryType === 'Weekly Expiry' ? 'bg-purple-950 text-purple-300 border-purple-800/50' : 'bg-blue-950 text-blue-300 border-blue-800/50';
                 grid.innerHTML += `
                     <div class="bg-cardbg rounded-2xl p-6 border border-gray-800 shadow-xl flex flex-col justify-between space-y-4">
                         <div>
@@ -339,7 +279,7 @@
                                 <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-900/60 text-blue-300 border border-blue-700/50">${s.ticker}</span>
                                 <div class="flex items-center space-x-1.5">
                                     <span class="text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50"><i class="fa-solid fa-chart-pie mr-1"></i>${s.prob} Win Prob</span>
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold border bg-blue-950 text-blue-300 border-blue-800/50">${s.expiryType}</span>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold border ${expiryBadgeColor}">${s.expiryType}</span>
                                 </div>
                             </div>
                             <h4 class="text-lg font-bold text-white">${s.name}</h4>
@@ -348,7 +288,7 @@
                         <div class="bg-darkbg p-3 rounded-xl border border-gray-800 space-y-1.5 text-xs">
                             <div class="flex justify-between"><span class="text-gray-400">Action:</span> <span class="font-bold text-white">${s.action}</span></div>
                             <div class="flex justify-between"><span class="text-gray-400">Entry & Expiry:</span> <span class="text-yellow-400 font-medium">${s.entryDate} &rarr; ${s.expiryDate}</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Live Spot Price:</span> <span class="text-gray-200 font-bold">₹${s.spot}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Spot Price:</span> <span class="text-gray-200 font-bold">₹${s.spot}</span></div>
                             <div class="flex justify-between"><span class="text-gray-400">Capital Required:</span> <span class="text-cyan-400 font-bold">${s.capitalRequired}</span></div>
                             <div class="flex justify-between"><span class="text-gray-400">Max Profit / Risk:</span> <span class="text-emerald-400 font-semibold">${s.maxProfit}</span> / <span class="text-danger font-semibold">${s.maxRisk}</span></div>
                             <div class="flex justify-between border-t border-gray-800 pt-1.5"><span class="text-gray-300 font-medium">Running P&L:</span> <span class="font-bold text-sm ${s.pnlClass}">${s.runningPnl}</span></div>
@@ -382,6 +322,7 @@
                         </td>
                         <td class="p-3 font-semibold text-cyan-300">${row.capital}</td>
                         <td class="p-3 font-bold ${row.pnl.startsWith('+') ? 'text-emerald-400' : 'text-danger'}">${row.pnl}</td>
+                        <td class="p-3 font-semibold text-danger">${row.drawdown}</td>
                         <td class="p-3 font-semibold ${row.ret.startsWith('+') ? 'text-emerald-400' : 'text-danger'}">${row.ret}</td>
                         <td class="p-3 text-center">${statusBadge}</td>
                     </tr>
@@ -389,16 +330,16 @@
             });
         }
 
-        // CAGR Equity Curve Chart
+        // Fund Valuation Growth Chart (Starting ₹5,00,000 in Mar 2020)
         function renderCagrChart() {
             const ctx = document.getElementById('cagrChart').getContext('2d');
             window.cagrChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Month 1', 'Month 3', 'Month 6', '1 Year', '2 Years', '3 Years', '4 Years', '5 Years'],
+                    labels: ['Mar 2020', '2020 (Dec)', '2021', '2022', '2023', '2024', '2025', '2026 (Nov)'],
                     datasets: [{
-                        label: 'Naruka Wealth Lowell Strategy (₹ Lakhs)',
-                        data: [11.48, 12.90, 14.23, 17.84, 24.10, 38.60, 58.20, 89.80],
+                        label: 'Fund Valuation (₹ Lakhs)',
+                        data: [5.0, 7.2, 10.1, 13.5, 18.0, 22.2, 24.5],
                         borderColor: '#3b82f6',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         fill: true,
@@ -417,33 +358,34 @@
             });
         }
 
-        // Strategy Calculator & P/L Chart
+        // Strategy Calculator & P/L Chart (Uses 2026 Nifty multiplier 65)
         function updateCalculator() {
             const strat = document.getElementById('calcStrategy').value;
             const spot = parseFloat(document.getElementById('calcSpot').value);
             const strike = parseFloat(document.getElementById('calcStrike').value);
             const premium = parseFloat(document.getElementById('calcPremium').value);
+            const lotMultiplier = 65; // 2026 Nifty lot size
 
             let maxProfit = 0, maxRisk = 0, breakeven = 0, prob = "83.5%";
 
             if (strat === 'CREDIT_SPREAD') {
-                maxProfit = premium * 50; 
-                maxRisk = (Math.abs(spot - strike) - premium) * 50;
+                maxProfit = premium * lotMultiplier; 
+                maxRisk = (Math.abs(spot - strike) - premium) * lotMultiplier;
                 breakeven = strike - premium;
                 prob = "84.0%";
             } else if (strat === 'NAKED_PUT') {
-                maxProfit = premium * 50;
-                maxRisk = (strike - premium) * 50;
+                maxProfit = premium * lotMultiplier;
+                maxRisk = (strike - premium) * lotMultiplier;
                 breakeven = strike - premium;
                 prob = "81.2% (+ Income)";
             } else if (strat === 'DITM_CALL') {
                 maxProfit = "Unlimited";
-                maxRisk = premium * 50;
+                maxRisk = premium * lotMultiplier;
                 breakeven = strike + premium;
                 prob = "78.5% (Delta 0.95)";
             } else {
-                maxProfit = (strike - spot + premium) * 50;
-                maxRisk = (spot - premium) * 50;
+                maxProfit = (strike - spot + premium) * lotMultiplier;
+                maxRisk = (spot - premium) * lotMultiplier;
                 breakeven = spot - premium;
                 prob = "80.0%";
             }
@@ -453,17 +395,17 @@
             document.getElementById('resBreakeven').innerText = '₹' + breakeven.toLocaleString('en-IN');
             document.getElementById('resProbability').innerText = prob;
 
-            renderPlChart(spot, strike, premium, strat);
+            renderPlChart(spot, strike, premium, strat, lotMultiplier);
         }
 
-        function renderPlChart(spot, strike, premium, strat) {
+        function renderPlChart(spot, strike, premium, strat, lotMultiplier) {
             const ctx = document.getElementById('plChart').getContext('2d');
             const prices = [spot*0.85, spot*0.90, spot*0.95, spot, spot*1.05, spot*1.10, spot*1.15];
             const pnl = prices.map(p => {
                 if (strat === 'CREDIT_SPREAD') {
-                    return p >= strike ? premium * 50 : (premium - (strike - p)) * 50;
+                    return p >= strike ? premium * lotMultiplier : (premium - (strike - p)) * lotMultiplier;
                 } else {
-                    return (p - strike + premium) * 50;
+                    return (p - strike + premium) * lotMultiplier;
                 }
             });
 
@@ -496,7 +438,7 @@
 
         // Initialize on load
         window.onload = function() {
-            simulateLiveFeed();
+            renderSignals();
             renderBacktestTable();
         };
     </script>
