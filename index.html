@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Naruka Wealth - Live Option Signals Terminal</title>
+    <title>Naruka Wealth - EOD Option Signals Terminal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -25,11 +25,8 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Flash animation for live price updates */
-        @keyframes flashGreen { 0% { color: #10b981; } 100% { color: white; } }
-        @keyframes flashRed { 0% { color: #ef4444; } 100% { color: white; } }
-        .tick-up { animation: flashGreen 1s ease-out; color: #10b981 !important; }
-        .tick-down { animation: flashRed 1s ease-out; color: #ef4444 !important; }
+        @keyframes flashBlue { 0% { color: #3b82f6; } 100% { color: white; } }
+        .tick-update { animation: flashBlue 1s ease-out; color: #3b82f6 !important; }
     </style>
 </head>
 <body class="bg-darkbg text-gray-100 font-sans antialiased min-h-screen flex flex-col">
@@ -38,13 +35,13 @@
     <div class="bg-cardbg border-b border-gray-800 text-xs py-2 px-4 overflow-x-auto whitespace-nowrap shadow-inner sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex items-center justify-between space-x-8">
             <div class="flex items-center space-x-6">
-                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">NIFTY 50 (Lot: 65):</strong> <span id="tickerNifty" class="text-white font-bold transition-colors">24,385.50</span> <span class="text-emerald-400 font-medium">(Weekly & Monthly Active)</span></span>
-                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">BANK NIFTY (Lot: 30):</strong> <span id="tickerBankNifty" class="text-white font-bold transition-colors">52,240.25</span> <span class="text-blue-400 font-medium">(Monthly Expiry Only)</span></span>
-                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">INDIA VIX:</strong> <span id="tickerVix" class="text-yellow-400 font-bold transition-colors">13.45</span></span>
+                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">NIFTY 50 (Lot: 65):</strong> <span id="tickerNifty" class="text-white font-bold transition-colors">--</span> <span class="text-emerald-400 font-medium">(Weekly & Monthly Active)</span></span>
+                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">BANK NIFTY (Lot: 30):</strong> <span id="tickerBankNifty" class="text-white font-bold transition-colors">--</span> <span class="text-blue-400 font-medium">(Monthly Expiry Only)</span></span>
+                <span class="flex items-center space-x-1.5"><strong class="text-gray-400">INDIA VIX:</strong> <span id="tickerVix" class="text-yellow-400 font-bold transition-colors">--</span></span>
             </div>
             <div class="flex items-center space-x-3 text-[11px]">
-                <span id="connectionStatus" class="text-emerald-400"><i class="fa-solid fa-circle fa-fade text-[8px] mr-1"></i> LIVE FEED ACTIVE</span>
-                <div class="text-gray-400 border-l border-gray-700 pl-3"><i class="fa-solid fa-clock text-blue-400 mr-1"></i> <span id="lastUpdated">Updating...</span></div>
+                <span id="connectionStatus" class="text-yellow-400"><i class="fa-solid fa-spinner fa-spin text-[8px] mr-1"></i> WAITING FOR GOOGLE DATA...</span>
+                <div class="text-gray-400 border-l border-gray-700 pl-3"><i class="fa-solid fa-calendar-check text-blue-400 mr-1"></i> EOD Sync: <span id="lastUpdated">Updating...</span></div>
             </div>
         </div>
     </div>
@@ -57,17 +54,14 @@
                     <i class="fa-solid fa-bolt"></i> NW
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg tracking-wide text-white">Naruka Wealth <span class="text-xs px-2 py-0.5 rounded bg-blue-900 text-blue-300 ml-2">Signal Terminal</span></h1>
-                    <p class="text-xs text-gray-400">Lee Lowell Index Strategy Engine | November 2026 Expiry Standards</p>
+                    <h1 class="font-bold text-lg tracking-wide text-white">Naruka Wealth <span class="text-xs px-2 py-0.5 rounded bg-blue-900 text-blue-300 ml-2">EOD Signal Terminal</span></h1>
+                    <p class="text-xs text-gray-400">Google Finance EOD Data Engine | November 2026 Expiry Standards</p>
                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-950 text-blue-400 border border-blue-800/50">
-                    <i class="fa-solid fa-circle-check mr-1.5"></i> Live Signal Engine
-                </span>
-                <a href="https://rahul-naruka.github.io/Option/" class="text-gray-400 hover:text-white text-sm font-medium transition">
-                    <i class="fa-solid fa-house mr-1"></i> Home
-                </a>
+                <button onclick="fetchGoogleFinanceEOD()" class="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-950 text-blue-400 border border-blue-800/50 hover:bg-blue-900 transition cursor-pointer">
+                    <i class="fa-solid fa-rotate mr-1.5"></i> Force EOD Sync
+                </button>
             </div>
         </div>
     </header>
@@ -77,7 +71,7 @@
         <div class="bg-gradient-to-r from-blue-900/40 via-cardbg to-cardbg border border-blue-800/40 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-white">Active Index Option Signals</h2>
-                <p class="text-gray-400 text-sm mt-1">Nifty 50 (Weekly & Monthly) and Bank Nifty (Monthly Expiry Only) active positions.</p>
+                <p class="text-gray-400 text-sm mt-1">End of Day (EOD) positions mapped to Google Finance closing prices.</p>
             </div>
             <div class="flex items-center space-x-3">
                 <label class="text-sm font-medium text-gray-300">Filter Expiry:</label>
@@ -97,35 +91,33 @@
 
     <!-- Application Script -->
     <script>
-        // 1. Core State Array (Now mutable for live updates)
         let liveSignals = [
             { 
                 id: "sig_nifty_weekly",
                 ticker: "NIFTY", name: "Nifty 50 Index", expiryType: "Weekly Expiry", expiryDate: "2026-11-05", 
                 strategy: "Option Credit Spread (Bull Put)", action: "SELL 24200 PE / BUY 24000 PE (Lot: 65)", 
-                entryDate: "2026-11-02", spot: 24385.50, capitalRequired: "₹27,950", 
+                entryDate: "2026-11-02", entrySpot: 24385.50, spot: 24385.50, capitalRequired: "₹27,950", 
                 maxProfit: "₹2,925", maxRisk: "₹10,075", runningPnl: 1495, 
-                iv: "13.8% (Cheap)", prob: "87.2%" 
+                iv: "13.8%", prob: "87.2%" 
             },
             { 
                 id: "sig_nifty_monthly",
                 ticker: "NIFTY", name: "Nifty 50 Index", expiryType: "Monthly Expiry", expiryDate: "2026-11-26", 
                 strategy: "Option Credit Spread (Bull Put)", action: "SELL 24000 PE / BUY 23800 PE (Lot: 65)", 
-                entryDate: "2026-10-28", spot: 24385.50, capitalRequired: "₹27,950", 
+                entryDate: "2026-10-28", entrySpot: 24385.50, spot: 24385.50, capitalRequired: "₹27,950", 
                 maxProfit: "₹7,800", maxRisk: "₹5,200", runningPnl: 3705, 
-                iv: "13.8% (Cheap)", prob: "85.2%" 
+                iv: "13.8%", prob: "85.2%" 
             },
             { 
                 id: "sig_banknifty_monthly",
                 ticker: "BANKNIFTY", name: "Bank Nifty Index", expiryType: "Monthly Expiry", expiryDate: "2026-11-26", 
                 strategy: "Naked Put Selling", action: "SELL 51000 PE (Lot: 30) [Monthly Only]", 
-                entryDate: "2026-10-29", spot: 52240.25, capitalRequired: "₹52,000", 
+                entryDate: "2026-10-29", entrySpot: 52240.25, spot: 52240.25, capitalRequired: "₹52,000", 
                 maxProfit: "₹10,650", maxRisk: "₹76,925", runningPnl: 5340, 
-                iv: "16.9% (Elevated)", prob: "82.5%" 
+                iv: "16.9%", prob: "82.5%" 
             }
         ];
 
-        // 2. DOM Rendering Engine
         function renderSignals(filter = "ALL") {
             const grid = document.getElementById('signalsGrid');
             grid.innerHTML = "";
@@ -151,10 +143,10 @@
                         </div>
                         <div class="bg-darkbg p-3 rounded-xl border border-gray-800 space-y-1.5 text-xs">
                             <div class="flex justify-between"><span class="text-gray-400">Action:</span> <span class="font-bold text-white">${s.action}</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Entry & Expiry:</span> <span class="text-yellow-400 font-medium">${s.entryDate} &rarr; ${s.expiryDate}</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Spot Price:</span> <span id="spot_${s.id}" class="text-gray-200 font-bold">₹${s.spot.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Entry:</span> <span class="text-gray-300 font-medium">${s.entryDate} at ₹${s.entrySpot.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">EOD Spot Price:</span> <span id="spot_${s.id}" class="text-gray-200 font-bold">₹${s.spot.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
                             <div class="flex justify-between border-t border-gray-800 pt-1.5">
-                                <span class="text-gray-300 font-medium">Live P&L:</span> 
+                                <span class="text-gray-300 font-medium">Est. EOD P&L:</span> 
                                 <span id="pnl_${s.id}" class="font-bold text-sm ${pnlClass}">${pnlPrefix}₹${s.runningPnl.toLocaleString('en-IN')}</span>
                             </div>
                         </div>
@@ -167,123 +159,90 @@
             renderSignals(document.getElementById('signalFilter').value);
         }
 
-        // 3. UI Update Helpers
         function updateDOMElement(elementId, newValue, isCurrency = false, isTicker = false) {
             const el = document.getElementById(elementId);
             if(!el) return;
             
-            const oldText = el.innerText.replace(/[^0-9.-]+/g,"");
-            const oldValue = parseFloat(oldText);
-            
             let formattedValue = isCurrency ? 
-                (newValue >= 0 ? "+" : "") + "₹" + Math.abs(newValue).toLocaleString('en-IN', {minimumFractionDigits: isTicker?2:0}) :
+                (newValue >= 0 && elementId.startsWith("pnl_") ? "+" : "") + "₹" + Math.abs(newValue).toLocaleString('en-IN', {minimumFractionDigits: isTicker?2:0}) :
                 newValue.toLocaleString('en-IN', {minimumFractionDigits: 2});
 
             el.innerText = formattedValue;
-
-            // Apply flash animation based on tick direction
-            if (newValue > oldValue) {
-                el.classList.remove('tick-down');
-                el.classList.add('tick-up');
-            } else if (newValue < oldValue) {
-                el.classList.remove('tick-up');
-                el.classList.add('tick-down');
-            }
+            el.classList.add('tick-update');
             
             setTimeout(() => {
-                el.classList.remove('tick-up', 'tick-down');
+                el.classList.remove('tick-update');
                 if(!isTicker && elementId.startsWith("pnl_")) {
                     el.className = `font-bold text-sm ${newValue >= 0 ? 'text-emerald-400' : 'text-danger'}`;
                 }
             }, 1000);
         }
 
-        function updateTimestamp() {
-            const now = new Date();
-            document.getElementById('lastUpdated').innerText = now.toLocaleTimeString();
-        }
-
-        // 4. Real Data Feed Integration
-        async function fetchLiveMarketData() {
+        // --- GOOGLE FINANCE EOD INTEGRATION ---
+        async function fetchGoogleFinanceEOD() {
             try {
-                // Replace with your actual NSE Invest or Broker API endpoint
-                const API_URL = 'https://api.nseinvest.com/v1/market/status'; 
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[8px] mr-1"></i> FETCHING EOD DATA...`;
+                document.getElementById('connectionStatus').className = "text-yellow-400";
+
+                // Integrated your Google Sheet pubhtml/csv link
+                const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGVpvbIRw1fFIGI891fuCGCuRbssQKR32JZ7eNmOq77QFGmGalTx2GSTuIa2AHodexTn2AYlnp3oJu/pub?output=csv';
+
+                const response = await fetch(GOOGLE_SHEET_CSV_URL);
+                if (!response.ok) throw new Error('Failed to fetch from Google Sheets');
                 
-                const response = await fetch(API_URL, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        // Add your specific API Keys/Tokens here
-                        'Authorization': 'Bearer YOUR_API_TOKEN_HERE' 
-                    }
-                });
-
-                if (!response.ok) throw new Error('Network response was not ok');
+                const csvText = await response.text();
+                const rows = csvText.trim().split('\n');
                 
-                const data = await response.json();
+                // Read the latest row
+                const latestData = rows[rows.length - 1].split(',');
+                
+                const currentNifty = parseFloat(latestData[1].replace(/[^0-9.-]+/g,""));
+                const currentBNifty = parseFloat(latestData[2].replace(/[^0-9.-]+/g,""));
+                const currentVix = parseFloat(latestData[3].replace(/[^0-9.-]+/g,""));
 
-                // 1. Map API payload to your variables (Adjust these keys based on your API's JSON response)
-                const currentNifty = data.indices.find(i => i.symbol === 'NIFTY 50').lastPrice;
-                const currentBNifty = data.indices.find(i => i.symbol === 'NIFTY BANK').lastPrice;
-                const currentVix = data.indices.find(i => i.symbol === 'INDIA VIX').lastPrice;
-
-                // 2. Update Tickers in the Header
+                // Update Header Tickers
                 updateDOMElement('tickerNifty', currentNifty, false, true);
                 updateDOMElement('tickerBankNifty', currentBNifty, false, true);
                 updateDOMElement('tickerVix', currentVix, false, true);
 
-                // 3. Update P&L for Active Signals based on the real spot price
+                // Update Signals based on EOD movement
                 liveSignals.forEach(signal => {
                     let priceDiff = 0;
                     
                     if (signal.ticker === 'NIFTY') {
-                        priceDiff = currentNifty - signal.spot;
+                        priceDiff = currentNifty - signal.entrySpot;
                         signal.spot = currentNifty;
                     } else if (signal.ticker === 'BANKNIFTY') {
-                        priceDiff = currentBNifty - signal.spot;
+                        priceDiff = currentBNifty - signal.entrySpot;
                         signal.spot = currentBNifty;
                     }
                     
-                    // Basic simulated P&L change based on spot movement (Replace with your actual Greeks/Options pricing logic)
-                    // If Nifty goes up, bull put spread gains (up to max profit).
-                    const deltaImpact = priceDiff * (signal.ticker === 'NIFTY' ? 65 : 30) * 0.3; // Rough 0.3 Delta assumption
+                    const deltaImpact = priceDiff * (signal.ticker === 'NIFTY' ? 65 : 30) * 0.3; 
                     signal.runningPnl += deltaImpact; 
                     
-                    // Cap P&L between max risk and max profit limits
                     const maxProf = parseFloat(signal.maxProfit.replace(/[^0-9.-]+/g,""));
                     const maxRisk = -parseFloat(signal.maxRisk.replace(/[^0-9.-]+/g,""));
-                    if (signal.runningPnl > maxProf) signal.runningPnl = maxProf;
+                    if (signal.runningPnl > maxProf) signal.runningPln = maxProf;
                     if (signal.runningPnl < maxRisk) signal.runningPnl = maxRisk;
 
-                    // Update DOM Cards
                     updateDOMElement(`spot_${signal.id}`, signal.spot, true, true);
                     updateDOMElement(`pnl_${signal.id}`, signal.runningPnl, true, false);
                 });
 
-                updateTimestamp();
-                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-circle fa-fade text-[8px] mr-1"></i> LIVE FEED ACTIVE`;
-                document.getElementById('connectionStatus').className = "text-emerald-400";
+                document.getElementById('lastUpdated').innerText = new Date().toLocaleDateString() + " Close";
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-check-circle text-[8px] mr-1"></i> EOD SYNC COMPLETE`;
+                document.getElementById('connectionStatus').className = "text-blue-400";
 
             } catch (error) {
-                console.error("Error fetching live data:", error);
-                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> FEED DISCONNECTED`;
+                console.error("Error fetching EOD data:", error);
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> EOD SYNC FAILED`;
                 document.getElementById('connectionStatus').className = "text-danger";
             }
         }
 
-        function startLiveFeed() {
-            // Fetch immediately on load
-            fetchLiveMarketData();
-            
-            // Poll the API every 3 seconds (3000ms)
-            // Note: Ensure your API rate limits allow 3-second polling, otherwise increase to 10000ms (10 seconds)
-            setInterval(fetchLiveMarketData, 3000); 
-        }
-
         window.onload = function() {
             renderSignals();
-            updateTimestamp();
-            startLiveFeed();
+            fetchGoogleFinanceEOD();
         };
     </script>
 </body>
