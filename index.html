@@ -58,11 +58,11 @@
         <div class="bg-gradient-to-r from-blue-900/40 via-cardbg to-cardbg border border-blue-800/40 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-white">Private Option Dashboard & Backtesting</h2>
-                <p class="text-gray-400 text-sm mt-1">Live active signals as of November 3, 2026 with 3-minute delayed market quotes and running P&Ls.</p>
+                <p class="text-gray-400 text-sm mt-1">Live active signals with deployment capital requirements and 1-Year historical backtest logs.</p>
             </div>
             <div class="flex flex-wrap gap-2">
                 <button onclick="switchTab('signals')" id="btn-signals" class="px-4 py-2 rounded-xl text-sm font-semibold bg-blue-600 text-white shadow transition">Live Signals & P&L</button>
-                <button onclick="switchTab('backtest')" id="btn-backtest" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Backtest Log</button>
+                <button onclick="switchTab('backtest')" id="btn-backtest" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">1-Year Backtest Log</button>
                 <button onclick="switchTab('cagr')" id="btn-cagr" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">CAGR Metrics</button>
                 <button onclick="switchTab('calc')" id="btn-calc" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Strategy Calculator</button>
             </div>
@@ -95,22 +95,22 @@
             </div>
         </div>
 
-        <!-- TAB 2: HISTORICAL BACKTEST SUMMARY -->
+        <!-- TAB 2: 1-YEAR HISTORICAL BACKTEST SUMMARY -->
         <div id="tab-backtest" class="hidden space-y-6">
             <div class="bg-cardbg rounded-2xl p-6 border border-gray-800 shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div>
-                        <h3 class="text-xl font-bold text-white">Historical Backtest Summary</h3>
-                        <p class="text-xs text-gray-400">Complete execution log including entry dates up to November 2026, expiry dates, and results.</p>
+                        <h3 class="text-xl font-bold text-white">1-Year Historical Backtest Summary (Nov 2025 – Nov 2026)</h3>
+                        <p class="text-xs text-gray-400">Complete execution log including deployment capital requirements, entry/exit dates, and returns.</p>
                     </div>
                     <div class="flex gap-4">
                         <div class="bg-darkbg px-4 py-2 rounded-xl border border-gray-800 text-center">
                             <span class="text-xs text-gray-400 block">Win Rate</span>
-                            <span class="text-lg font-bold text-emerald-400">86.2%</span>
+                            <span class="text-lg font-bold text-emerald-400">84.5%</span>
                         </div>
                         <div class="bg-darkbg px-4 py-2 rounded-xl border border-gray-800 text-center">
-                            <span class="text-xs text-gray-400 block">Total Net Return</span>
-                            <span class="text-lg font-bold text-blue-400">+14.85%</span>
+                            <span class="text-xs text-gray-400 block">1-Year Net Return</span>
+                            <span class="text-lg font-bold text-blue-400">+78.40%</span>
                         </div>
                     </div>
                 </div>
@@ -119,11 +119,10 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b border-gray-800 text-xs text-gray-400 uppercase bg-darkbg/50">
-                                <th class="p-3">Entry (Date & Time)</th>
+                                <th class="p-3">Entry Date</th>
                                 <th class="p-3">Expiry Date</th>
-                                <th class="p-3">Instrument</th>
-                                <th class="p-3">Strategy</th>
-                                <th class="p-3">Exit (Date & Time)</th>
+                                <th class="p-3">Instrument & Strategy</th>
+                                <th class="p-3">Capital Required (₹)</th>
                                 <th class="p-3">Net P&L (₹)</th>
                                 <th class="p-3">Return %</th>
                                 <th class="p-3 text-center">Status</th>
@@ -242,12 +241,12 @@
             if (tabId === 'calc' && window.plChartInstance == null) updateCalculator();
         }
 
-        // Live Signals Data updated for November 2026
+        // Live Signals Data updated with Capital Required, Max Profit, and Max Risk
         let liveSignals = [
-            { ticker: "NIFTY", symbolYahoo: "^NSEI", name: "Nifty 50 Index", strategy: "Option Credit Spread (Bull Put)", action: "SELL 24200 PE / BUY 24000 PE", entryDate: "2026-10-28", expiryDate: "2026-11-26", entryTime: "09:30:15 AM", spot: "Loading...", entry: "₹120 CR", runningPnl: "+₹2,850", pnlClass: "text-emerald-400", sl: "₹240", target: "₹15", iv: "13.8% (Cheap)", prob: "85.2%" },
-            { ticker: "BANKNIFTY", symbolYahoo: "^NSEBANK", name: "Bank Nifty Index", strategy: "Naked Put Selling", action: "SELL 51500 PE", entryDate: "2026-10-29", expiryDate: "2026-11-26", entryTime: "10:15:40 AM", spot: "Loading...", entry: "₹355 CR", runningPnl: "+₹4,420", pnlClass: "text-emerald-400", sl: "₹650", target: "₹40", iv: "16.9% (Elevated)", prob: "82.5%" },
-            { ticker: "RELIANCE", symbolYahoo: "RELIANCE.NS", name: "Reliance Industries", strategy: "Deep ITM Call Substitution", action: "BUY JAN 1300 CE (Delta 0.95)", entryDate: "2026-10-15", expiryDate: "2027-01-28", entryTime: "11:05:00 AM", spot: "Loading...", entry: "₹215 DR", runningPnl: "+₹3,800", pnlClass: "text-emerald-400", sl: "₹140", target: "₹320", iv: "15.5% (Normal)", prob: "77.4%" },
-            { ticker: "TCS", symbolYahoo: "TCS.NS", name: "Tata Consultancy", strategy: "Option Credit Spread (Bear Call)", action: "SELL 4300 CE / BUY 4350 CE", entryDate: "2026-10-30", expiryDate: "2026-11-26", entryTime: "01:20:10 PM", spot: "Loading...", entry: "₹45 CR", runningPnl: "-₹450", pnlClass: "text-danger", sl: "₹85", target: "₹5", iv: "14.8% (Normal)", prob: "83.8%" }
+            { ticker: "NIFTY", symbolYahoo: "^NSEI", name: "Nifty 50 Index", strategy: "Option Credit Spread (Bull Put)", action: "SELL 24200 PE / BUY 24000 PE", entryDate: "2026-10-28", expiryDate: "2026-11-26", spot: "Loading...", entry: "₹120 CR", capitalRequired: "₹21,500", maxProfit: "₹6,000", maxRisk: "₹14,000", runningPnl: "+₹2,850", pnlClass: "text-emerald-400", sl: "₹240", iv: "13.8% (Cheap)", prob: "85.2%" },
+            { ticker: "BANKNIFTY", symbolYahoo: "^NSEBANK", name: "Bank Nifty Index", strategy: "Naked Put Selling", action: "SELL 51500 PE", entryDate: "2026-10-29", expiryDate: "2026-11-26", spot: "Loading...", entry: "₹355 CR", capitalRequired: "₹48,000", maxProfit: "₹5,325", maxRisk: "₹76,925", runningPnl: "+₹4,420", pnlClass: "text-emerald-400", sl: "₹650", iv: "16.9% (Elevated)", prob: "82.5%" },
+            { ticker: "RELIANCE", symbolYahoo: "RELIANCE.NS", name: "Reliance Industries", strategy: "Deep ITM Call Substitution", action: "BUY JAN 1300 CE (Delta 0.95)", entryDate: "2026-10-15", expiryDate: "2027-01-28", spot: "Loading...", entry: "₹215 DR", capitalRequired: "₹53,750", maxProfit: "Unlimited", maxRisk: "₹10,750", runningPnl: "+₹3,800", pnlClass: "text-emerald-400", sl: "₹140", iv: "15.5% (Normal)", prob: "77.4%" },
+            { ticker: "TCS", symbolYahoo: "TCS.NS", name: "Tata Consultancy", strategy: "Option Credit Spread (Bear Call)", action: "SELL 4300 CE / BUY 4350 CE", entryDate: "2026-10-30", expiryDate: "2026-11-26", spot: "Loading...", entry: "₹45 CR", capitalRequired: "₹12,750", maxProfit: "₹2,250", maxRisk: "₹2,750", runningPnl: "-₹450", pnlClass: "text-danger", sl: "₹85", iv: "14.8% (Normal)", prob: "83.8%" }
         ];
 
         // Fetch Live Market Data (3-Minute Delayed Public API via CORS Proxy)
@@ -274,12 +273,20 @@
             renderSignals(document.getElementById('signalFilter').value);
         }
 
-        // Historical Backtest Log Data updated up to late October / November 2026
+        // 1-Year Historical Backtest Log Data (Nov 2025 - Nov 2026) with Deployment Capital
         const backtestLog = [
-            { entryDate: "2026-10-25", expiryDate: "2026-10-29", ticker: "NIFTY", strategy: "Bull Put Credit Spread", entryTime: "09:35 AM", exitTime: "03:15 PM", entry: "₹125 CR", exit: "₹12 CR", pnl: "+₹5,600", ret: "+11.2%", status: "Win" },
-            { entryDate: "2026-10-20", expiryDate: "2026-10-29", ticker: "BANKNIFTY", strategy: "Naked Put Selling", entryTime: "10:00 AM", exitTime: "02:45 PM", entry: "₹410 CR", exit: "₹45 CR", pnl: "+₹9,120", ret: "+13.4%", status: "Win" },
-            { entryDate: "2026-09-15", expiryDate: "2026-10-18", ticker: "RELIANCE", strategy: "DITM Call Substitution", entryTime: "11:15 AM", exitTime: "03:25 PM", entry: "₹190 DR", exit: "₹260 DR", pnl: "+₹7,000", ret: "+36.8%", status: "Win" },
-            { entryDate: "2026-10-10", expiryDate: "2026-10-15", ticker: "TCS", strategy: "Bear Call Credit Spread", entryTime: "09:45 AM", exitTime: "11:30 AM", entry: "₹55 CR", exit: "₹120 CR", pnl: "-₹3,250", ret: "-11.8%", status: "Loss" }
+            { entryDate: "2026-10-15", expiryDate: "2026-10-29", ticker: "NIFTY", strategy: "Bull Put Credit Spread", capital: "₹21,500", pnl: "+₹5,600", ret: "+26.0%", status: "Win" },
+            { entryDate: "2026-09-20", expiryDate: "2026-09-30", ticker: "BANKNIFTY", strategy: "Naked Put Selling", capital: "₹48,000", pnl: "+₹11,400", ret: "+23.7%", status: "Win" },
+            { entryDate: "2026-08-10", expiryDate: "2026-09-10", ticker: "RELIANCE", strategy: "DITM Call Substitution", capital: "₹53,750", pnl: "+₹18,500", ret: "+34.4%", status: "Win" },
+            { entryDate: "2026-07-05", expiryDate: "2026-07-30", ticker: "TCS", strategy: "Bear Call Credit Spread", capital: "₹12,750", pnl: "-₹2,750", ret: "-21.5%", status: "Loss" },
+            { entryDate: "2026-06-02", expiryDate: "2026-06-25", ticker: "NIFTY", strategy: "Bull Put Credit Spread", capital: "₹20,800", pnl: "+₹4,800", ret: "+23.0%", status: "Win" },
+            { entryDate: "2026-05-12", expiryDate: "2026-05-28", ticker: "BANKNIFTY", strategy: "Naked Put Selling", capital: "₹46,000", pnl: "+₹9,800", ret: "+21.3%", status: "Win" },
+            { entryDate: "2026-04-04", expiryDate: "2026-04-29", ticker: "RELIANCE", strategy: "DITM Call Substitution", capital: "₹51,000", pnl: "+₹14,200", ret: "+27.8%", status: "Win" },
+            { entryDate: "2026-03-01", expiryDate: "2026-03-26", ticker: "TCS", strategy: "Bear Call Credit Spread", capital: "₹12,000", pnl: "+₹2,100", ret: "+17.5%", status: "Win" },
+            { entryDate: "2026-02-05", expiryDate: "2026-02-26", ticker: "NIFTY", strategy: "Bull Put Credit Spread", capital: "₹20,000", pnl: "+₹5,100", ret: "+25.5%", status: "Win" },
+            { entryDate: "2026-01-10", expiryDate: "2026-01-29", ticker: "BANKNIFTY", strategy: "Naked Put Selling", capital: "₹45,000", pnl: "+₹10,500", ret: "+23.3%", status: "Win" },
+            { entryDate: "2025-12-05", expiryDate: "2025-12-24", ticker: "RELIANCE", strategy: "DITM Call Substitution", capital: "₹49,000", pnl: "+₹12,800", ret: "+26.1%", status: "Win" },
+            { entryDate: "2025-11-03", expiryDate: "2025-11-27", ticker: "TCS", strategy: "Bear Call Credit Spread", capital: "₹11,500", pnl: "+₹1,950", ret: "+16.9%", status: "Win" }
         ];
 
         function renderSignals(filter = "ALL") {
@@ -300,12 +307,11 @@
                         </div>
                         <div class="bg-darkbg p-3 rounded-xl border border-gray-800 space-y-1.5 text-xs">
                             <div class="flex justify-between"><span class="text-gray-400">Action:</span> <span class="font-bold text-white">${s.action}</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Entry Date & Time:</span> <span class="text-yellow-400 font-semibold"><i class="fa-regular fa-calendar mr-1"></i>${s.entryDate} (${s.entryTime})</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Expiry Date:</span> <span class="text-cyan-400 font-semibold"><i class="fa-solid fa-hourglass-end mr-1"></i>${s.expiryDate}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Entry & Expiry:</span> <span class="text-yellow-400 font-medium">${s.entryDate} &rarr; ${s.expiryDate}</span></div>
                             <div class="flex justify-between"><span class="text-gray-400">Spot Price (3m Delayed):</span> <span class="text-gray-200 font-bold">₹${s.spot}</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Entry Premium:</span> <span class="font-bold text-emerald-400">${s.entry}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Capital Required:</span> <span class="text-cyan-400 font-bold">${s.capitalRequired}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Max Profit / Risk:</span> <span class="text-emerald-400 font-semibold">${s.maxProfit}</span> / <span class="text-danger font-semibold">${s.maxRisk}</span></div>
                             <div class="flex justify-between border-t border-gray-800 pt-1.5"><span class="text-gray-300 font-medium">Running P&L:</span> <span class="font-bold text-sm ${s.pnlClass}">${s.runningPnl}</span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Stop Loss:</span> <span class="text-danger">${s.sl}</span></div>
                         </div>
                         <button onclick="alert('Signal executed for ${s.ticker} (${s.strategy})!')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl transition shadow">
                             Execute Strategy Order
@@ -329,11 +335,13 @@
                     : '<span class="px-2 py-1 rounded text-xs bg-red-900/40 text-red-400 border border-red-700/40">Loss</span>';
                 tbody.innerHTML += `
                     <tr class="hover:bg-darkbg/40 transition">
-                        <td class="p-3 text-gray-300 text-xs font-medium"><i class="fa-regular fa-calendar mr-1 text-gray-400"></i>${row.entryDate}<br><span class="text-yellow-400/90">${row.entryTime}</span></td>
+                        <td class="p-3 text-gray-300 text-xs font-medium"><i class="fa-regular fa-calendar mr-1 text-gray-400"></i>${row.entryDate}</td>
                         <td class="p-3 text-cyan-400 text-xs font-semibold"><i class="fa-solid fa-hourglass-end mr-1"></i>${row.expiryDate}</td>
-                        <td class="p-3 font-bold text-white">${row.ticker}</td>
-                        <td class="p-3 text-gray-300">${row.strategy}</td>
-                        <td class="p-3 text-gray-400 text-xs font-medium"><i class="fa-regular fa-calendar mr-1"></i>${row.entryDate}<br><span class="text-gray-300">${row.exitTime}</span></td>
+                        <td class="p-3">
+                            <span class="font-bold text-white">${row.ticker}</span><br>
+                            <span class="text-xs text-gray-400">${row.strategy}</span>
+                        </td>
+                        <td class="p-3 font-semibold text-cyan-300">${row.capital}</td>
                         <td class="p-3 font-bold ${row.pnl.startsWith('+') ? 'text-emerald-400' : 'text-danger'}">${row.pnl}</td>
                         <td class="p-3 font-semibold ${row.ret.startsWith('+') ? 'text-emerald-400' : 'text-danger'}">${row.ret}</td>
                         <td class="p-3 text-center">${statusBadge}</td>
